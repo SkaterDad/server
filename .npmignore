@@ -12,6 +12,3 @@ sandbox
 node_modules
 coverage
 *.xml
-
-# Dist
-dist/

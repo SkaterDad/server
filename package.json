@@ -1,15 +1,31 @@
 {
   "name": "hyperapp-server",
   "version": "0.0.1",
-  "description": "Server side rendering for hyperapp.",
-  "main": "cjs/index.js",
+  "description": "Render your hyperapp apps server-side.",
+  "main": "dist/index.js",
   "jsnext:main": "src/index.js",
+  "module": "src/index.js",
+  "repository": "hyperapp/hyperapp-server",
+  "babel": {
+    "presets": [
+      ["env", {
+        "targets": {
+          "node": "current"
+        }
+      }]
+    ]
+  },
   "scripts": {
-    "test": "jest --coverage --no-cache"
+    "test": "jest --coverage --no-cache",
+    "build": "rollup -f cjs -i src/index.js -o dist/index.js",
+    "format": "prettier --semi false --write 'src/**/*.js'",
+    "prepublish": "npm run build",
+    "release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "author": "Benjamin Johnson",
   "license": "MIT",
   "devDependencies": {
+    "babel-preset-env": "^1.5.1",
     "jest": "^20.0.4",
     "prettier": "^1.4.0",
     "rollup": "^0.41.6"
