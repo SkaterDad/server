@@ -1,0 +1,17 @@
+{
+  "name": "hyperapp-server",
+  "version": "0.0.1",
+  "description": "Server side rendering for hyperapp.",
+  "main": "cjs/index.js",
+  "jsnext:main": "src/index.js",
+  "scripts": {
+    "test": "jest --coverage --no-cache"
+  },
+  "author": "Benjamin Johnson",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^20.0.4",
+    "prettier": "^1.4.0",
+    "rollup": "^0.41.6"
+  }
+}
