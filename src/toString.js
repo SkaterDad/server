@@ -7,9 +7,10 @@ function renderToString(vnode) {
   var attrs = ""
   for (var i in attrNames) {
     var currentAttrName = attrNames[i]
-    var content = currentAttrName == "style"
-      ? stringifyStyle(vnode.data[currentAttrName])
-      : vnode.data[currentAttrName]
+    var content =
+      currentAttrName == "style"
+        ? stringifyStyle(vnode.data[currentAttrName])
+        : vnode.data[currentAttrName]
 
     attrs += " " + currentAttrName + '="' + content + '"'
   }
@@ -32,7 +33,10 @@ function stringifyStyle(style) {
   for (var i in properties) {
     var curProp = properties[i]
     inlineStyle +=
-      curProp.replace(/[A-Z]/, "-$&").toLowerCase() + ":" + style[curProp] + ";"
+      curProp.replace(/[A-Z]/g, "-$&").toLowerCase() +
+      ":" +
+      style[curProp] +
+      ";"
   }
 
   return inlineStyle

@@ -44,6 +44,10 @@ test("style", () => {
     {
       vnode: createVNode({ data: { style: { backgroundColor: "papayawhip" } } }),
       html: `<div style="background-color:papayawhip;"></div>`
+    },
+    {
+      vnode: createVNode({ data: { style: { backgroundColor: "papayawhip", borderTopLeftRadius: "10px" } } }),
+      html: `<div style="background-color:papayawhip;border-top-left-radius:10px;"></div>`
     }
   ])
 })
