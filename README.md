@@ -1,46 +1,36 @@
-# **hyperapp-server**
+### How to try this
 
-[![Travis CI](https://img.shields.io/travis/hyperapp/hyperapp-server/master.svg)](https://travis-ci.org/hyperapp/hyperapp-server)
-[![Codecov](https://img.shields.io/codecov/c/github/hyperapp/hyperapp-server/master.svg)](https://codecov.io/gh/hyperapp/hyperapp-server)
-[![npm](https://img.shields.io/npm/v/hyperapp-server.svg?colorB=09e5f9)](https://www.npmjs.org/package/hyperapp-server)
-[![Slack](https://hyperappjs.herokuapp.com/badge.svg)](https://hyperappjs.herokuapp.com "Join us")
+Installation:
 
-Your favorite hyperapp framework, now rendered server-side.
-## Installation
+```
+git clone (whatever github says the url is)
 
-```bash
-# Using npm
-npm install hyperapp-server hyperapp
+npm install
 
-# Using yarn
-yarn add hyperapp-server
+node ./example/server.js
 ```
 
-## Usage
+In terminal or browser:
 
-_At the moment, hyperapp-server only supports static rendering. True server rendering coming soon!_
+```
+curl http://localhost:8080/string
 
-```javascript
-import { h } from "hyperapp"
-import { toString } from "hyperapp-server"
+curl http://localhost:8080/stream
 
-const vnode = h("div", null, "Hi.")
-
-const html = toString(vnode)
-
-// html = "<div>Hi.<div>"
 ```
 
-## Issues
+To see the benefit of streaming, open `example/appConfig.js` and change the `getData` action to have a longer delay.  You should see the `<h1>` rendered before the app view.
 
-No software is free of bugs. If you're not sure if something is a bug or not, [file an issue](https://github.com/hyperapp/hyperapp/issues) anyway. Questions, feedback and feature requests are welcome too.
+```js
+    getData: (state, actions) => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(["one", "two", "three", "four"])
+        }, 1000)
+      }).then(data => actions.setRemote(data))
+```
 
-## Community
+### Note on perf:
+I did some benchmarking using `autocannon` with 20 concurrent requests on a free Cloud9 IDE instance.
 
-* [Slack](https://hyperappjs.herokuapp.com)
-* [/r/hyperapp](https://www.reddit.com/r/hyperapp)
-* [Twitter](https://twitter.com/hyperappjs)
-
-## License
-
-HyperApp is MIT licensed. See [LICENSE](LICENSE.md).
+When passing `{async: true}` as an option, I've found perf to be similar between the renderToStream & renderToString versions.  It's a whole different story with `{async: false}`, though, where renderToString is several times faster.
