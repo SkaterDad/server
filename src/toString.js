@@ -44,4 +44,4 @@ function stringifyStyle(style) {
   return inlineStyle
 }
 
-module.exports = renderToString
+export default renderToString
