@@ -7,12 +7,14 @@ function renderToString(vnode) {
   var attrs = ""
   for (var i in attrNames) {
     var currentAttrName = attrNames[i]
-    var content =
-      currentAttrName == "style"
-        ? stringifyStyle(vnode.data[currentAttrName])
-        : vnode.data[currentAttrName]
+    if (typeof vnode.data[currentAttrName] !== "function") {
+      var content =
+        currentAttrName == "style"
+          ? stringifyStyle(vnode.data[currentAttrName])
+          : vnode.data[currentAttrName]
 
-    attrs += " " + currentAttrName + '="' + content + '"'
+      attrs += " " + currentAttrName + '="' + content + '"'
+    }
   }
 
   // Get the child nodes of the current vnode
@@ -42,4 +44,4 @@ function stringifyStyle(style) {
   return inlineStyle
 }
 
-export default renderToString
+module.exports = renderToString

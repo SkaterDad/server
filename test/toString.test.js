@@ -31,7 +31,11 @@ test("attributes", () => {
     {
       vnode: createVNode({ data: { class: "a", id: "a" }}),
       html: `<div class="a" id="a"></div>`
-    }
+    },
+    {
+      vnode: createVNode({ tag: 'button', data: { onclick: () => true }, children: 'Text' }),
+      html: `<button>Text</button>`
+    },
   ])
 })
 
