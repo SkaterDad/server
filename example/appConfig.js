@@ -67,7 +67,8 @@ var config = {
         h("button", { onclick: actions.mix.add }, "Add"),
         h("button", { onclick: actions.mix.sub }, "Sub")
       ]),
-      h("pre", { class: "remote-data" }, JSON.stringify(state.remoteData))
+      h("pre", { class: "remote-data" }, JSON.stringify(state.remoteData)),
+      h("div", null, new Array(2000).fill(0).map((x,i) => i).map(x => h('div', {key: x}, `Element ${x}`)))
     ])
 }
 
