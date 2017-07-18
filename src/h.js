@@ -52,8 +52,12 @@ function renderToString(vnode) {
   }
 
   // Get the child nodes of the current vnode
-  for (var i = 0; i < vnode.children.length; i++) {
-    children += vnode.children[i]
+  if (Array.isArray(vnode.children)) {
+    for (var i = 0; i < vnode.children.length; i++) {
+      children += vnode.children[i]
+    }
+  } else {
+    children += vnode.children
   }
 
   // Create opening and closing tags with the content sandwiched between
