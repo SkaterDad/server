@@ -6,12 +6,17 @@ global.document = {
 // Express
 const server = require("express")()
 
-// Load hyperapp config object (same as client app will use)
+// Load hyperapp config object creator (same as client app will use)
 const appConfig = require("./appConfig")
+const defaultH = require("hyperapp").h
+const serverH = require("../src/h")
+
+const defaultApp = appConfig(defaultH)
+const serverApp = appConfig(serverH)
 
 // Define hyperapp/server configuration (defaults shown)
 const serverConfig = {
-  async: true,
+  async: false,
   events: ["init", "loaded"]
 }
 
@@ -24,13 +29,11 @@ const template = {
       <head>
         <title>SSR App</title>
         <script src="dist/client.js" defer></script>
-        <!-- css, whatever else you want to start preloading -->
-        <!-- template.head would normally end right here, but I included the next 3 lines here so the H1 would get sent in the 1st chunk -->
-      </head>
-      <body>
-        <h1>Hi, I'm in the 1st chunk so you can see streaming work in a browser :)</h1>`,
+        <!-- css, whatever else you want to start preloading -->`,
   //Between state & view
   neck: `
+      </head>
+      <body>
         <div id="app">`,
   //After view
   tail: `
@@ -47,11 +50,21 @@ const hyperapp = require("../src/app")
 server.get("/string", async (req, res) => {
   const time = Date.now()
 
-  const app = hyperapp(appConfig, serverConfig)
+  const app = hyperapp(defaultApp, serverConfig)
   const html = await app.renderToString(template)
   res.send(html)
 
   console.log("String request time = " + (Date.now() - time) + "ms")
+})
+
+server.get("/optstring", async (req, res) => {
+  const time = Date.now()
+
+  const app = hyperapp(serverApp, serverConfig)
+  const html = await app.optimizedRender(template)
+  res.send(html)
+
+  console.log("Opt string request time = " + (Date.now() - time) + "ms")
 })
 
 server.get("/stream", async (req, res) => {
@@ -60,7 +73,7 @@ server.get("/stream", async (req, res) => {
   //Tell browsers we'll be sending HTML chunks
   res.setHeader("Content-Type", "text/html; charset=utf-8")
   res.setHeader("Transfer-Encoding", "chunked")
-  const app = hyperapp(appConfig, serverConfig)
+  const app = hyperapp(defaultApp, serverConfig)
   await app.renderToStream(template, res, time)
   res.end()
 

@@ -43,7 +43,8 @@ function app(appConfig, serverConfig) {
   // we return new functions
   return {
     renderToString,
-    renderToStream
+    renderToStream,
+    optimizedRender
   }
 
   // New - Runs events, then sends back HTML string.
@@ -70,6 +71,31 @@ function app(appConfig, serverConfig) {
       "</script>" +
       template.neck +
       toString(vdom) +
+      template.tail
+    )
+  }
+
+  // New - Runs events, then sends back HTML string.
+  async function optimizedRender(template) {
+    // Call the user-specified events
+    for (var i = 0; i < config.events.length; i++) {
+      if (config.async) {
+        await asyncEmit(config.events[i])
+      } else {
+        emit(config.events[i])
+      }
+    }
+
+    //Calculate state -> view -> string
+    const html = emit("render", view)(state, actions)
+
+    return (
+      template.head +
+      '<script id="__INITIAL_STATE__" type="application/json">' +
+      JSON.stringify(state) +
+      "</script>" +
+      template.neck +
+      html +
       template.tail
     )
   }

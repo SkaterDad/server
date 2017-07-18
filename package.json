@@ -19,6 +19,9 @@
     ]
   },
   "scripts": {
+    "example": "nodemon ./example/server.js",
+    "bench": "autocannon -c 20 http://localhost:8080/string && autocannon -c 20 http://localhost:8080/stream",
+    "bench-string": "autocannon -c 10 http://localhost:8080/optstring && autocannon -c 10 http://localhost:8080/string",
     "test": "jest --coverage --no-cache",
     "build": "rollup -f cjs -i src/index.js -o dist/index.js",
     "format": "prettier --semi false --write 'src/**/*.js' && prettier --semi false --write 'example/**/*.js'",
