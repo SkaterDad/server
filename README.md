@@ -30,7 +30,12 @@ To see the benefit of streaming, open `example/appConfig.js` and change the `get
       }).then(data => actions.setRemote(data))
 ```
 
-### Note on perf:
+### Notes on perf:
 I did some benchmarking using `autocannon` with 20 concurrent requests on a free Cloud9 IDE instance.
 
 When passing `{async: true}` as an option, I've found perf to be similar between the renderToStream & renderToString versions.  It's a whole different story with `{async: false}`, though, where renderToString is several times faster.
+
+This repo also contains a server-specific `h` function, which directly computes the html string.  This yields big perf wins since you don't have to do `state -> vdom` then `vdom -> html`, which computes the whole tree twice.  I also replaced `for...in` loops with normal `for` loops.
+
+On JSPerf.com, and my computer w/ Chrome, this gave nearly 57% faster performance. (https://jsperf.com/hyperappssr/1)
+Of course this is just one piece of the overall  request/response perf, but it couldn't hurt!
