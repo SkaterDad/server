@@ -1,3 +1,21 @@
+var voidElements = {
+  area: true,
+  base: true,
+  br: true,
+  col: true,
+  embed: true,
+  hr: true,
+  img: true,
+  input: true,
+  keygen: true,
+  link: true,
+  meta: true,
+  param: true,
+  source: true,
+  track: true,
+  wbr: true
+}
+
 function renderToString(vnode) {
   var tag = vnode.tag
   var children = vnode.children
@@ -13,6 +31,11 @@ function renderToString(vnode) {
         : vnode.data[currentAttrName]
 
     attrs += " " + currentAttrName + '="' + content + '"'
+  }
+
+  // Void tags cannot have children, so return early
+  if (voidElements[tag]) {
+    return "<" + tag + attrs + ">"
   }
 
   // Get the child nodes of the current vnode
