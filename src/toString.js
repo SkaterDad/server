@@ -5,7 +5,7 @@ function renderToString(vnode) {
   var attrNames = Object.keys(vnode.data)
 
   var attrs = ""
-  for (var i in attrNames) {
+  for (var i = 0; i < attrNames.length; i++) {
     var currentAttrName = attrNames[i]
     var content =
       currentAttrName == "style"
@@ -17,7 +17,7 @@ function renderToString(vnode) {
 
   // Get the child nodes of the current vnode
   var childHTML = ""
-  for (var i in children) {
+  for (var i = 0; i < children.length; i++) {
     var child = children[i]
     if (child.tag) childHTML += renderToString(child)
     if (typeof child == "string") childHTML += child
@@ -30,7 +30,7 @@ function renderToString(vnode) {
 function stringifyStyle(style) {
   var properties = Object.keys(style)
   var inlineStyle = ""
-  for (var i in properties) {
+  for (var i = 0; i < properties.length; i++) {
     var curProp = properties[i]
     inlineStyle +=
       curProp.replace(/[A-Z]/g, "-$&").toLowerCase() +
