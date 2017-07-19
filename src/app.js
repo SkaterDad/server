@@ -44,18 +44,26 @@ function app(appConfig, serverConfig) {
   return {
     renderToString,
     renderToStream,
-    optimizedRender
+    optimizedRender,
   }
 
   // New - Runs events, then sends back HTML string.
   async function renderToString(template) {
-    // Call the user-specified events
+    var result
+    var promises = []
+    // Call the user-specified events (replaces "emit")
+    // If a promise is found, add it to an array
     for (var i = 0; i < config.events.length; i++) {
-      if (config.async) {
-        await asyncEmit(config.events[i])
-      } else {
-        emit(config.events[i])
+      const handlers = events[config.events[i]] || []
+      for (var j = 0; j < handlers.length; j++) {
+        result = handlers[j](state, actions)
+        if (result != null && result.then && typeof result.then === "function") promises.push(result)
       }
+    }
+
+    // If any promises were registered, wait for them all.
+    if (promises.length > 0) {
+      await Promise.all(promises)
     }
 
     //Calculate state -> view -> string
@@ -75,15 +83,23 @@ function app(appConfig, serverConfig) {
     )
   }
 
-  // New - Runs events, then sends back HTML string.
+  // Optimized code.
   async function optimizedRender(template) {
-    // Call the user-specified events
+    var result
+    var promises = []
+    // Call the user-specified events (replaces "emit")
+    // If a promise is found, add it to an array
     for (var i = 0; i < config.events.length; i++) {
-      if (config.async) {
-        await asyncEmit(config.events[i])
-      } else {
-        emit(config.events[i])
+      const handlers = events[config.events[i]] || []
+      for (var j = 0; j < handlers.length; j++) {
+        result = handlers[j](state, actions)
+        if (result != null && result.then && typeof result.then === "function") promises.push(result)
       }
+    }
+
+    // If any promises were registered, wait for them all.
+    if (promises.length > 0) {
+      await Promise.all(promises)
     }
 
     //Calculate state -> view -> string
@@ -110,13 +126,21 @@ function app(appConfig, serverConfig) {
     stream.write(template.head)
     //console.log(`Stream 1st bytes sent in ${Date.now() - reqStartTime}ms`)
 
-    // Call the user-specified events to determine state
+    var result
+    var promises = []
+    // Call the user-specified events (replaces "emit")
+    // If a promise is found, add it to an array
     for (var i = 0; i < config.events.length; i++) {
-      if (config.async) {
-        await asyncEmit(config.events[i])
-      } else {
-        emit(config.events[i])
+      const handlers = events[config.events[i]] || []
+      for (var j = 0; j < handlers.length; j++) {
+        result = handlers[j](state, actions)
+        if (result != null && result.then && typeof result.then === "function") promises.push(result)
       }
+    }
+
+    // If any promises were registered, wait for them all.
+    if (promises.length > 0) {
+      await Promise.all(promises)
     }
 
     // emit serialized state
@@ -184,15 +208,15 @@ function app(appConfig, serverConfig) {
     return data
   }
 
-  // Copied from hyperapp core
+  // Sync version - converted to normal "for" loop for perf
   function emit(name, data) {
-    ;(events[name] || []).map(function(cb) {
-      var result = cb(state, actions, data)
+    const handlers = events[name] || []
+    for (var i = 0; i < handlers.length; i++) {
+      var result = handlers[i](state, actions, data)
       if (result != null) {
         data = result
       }
-    })
-
+    }
     return data
   }
 }

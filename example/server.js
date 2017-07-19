@@ -16,7 +16,7 @@ const serverApp = appConfig(serverH)
 
 // Define hyperapp/server configuration (defaults shown)
 const serverConfig = {
-  async: false,
+  async: true,
   events: ["init", "loaded"]
 }
 
@@ -57,14 +57,14 @@ server.get("/string", async (req, res) => {
   console.log("String request time = " + (Date.now() - time) + "ms")
 })
 
-server.get("/optstring", async (req, res) => {
+server.get("/optimized", async (req, res) => {
   const time = Date.now()
 
   const app = hyperapp(serverApp, serverConfig)
   const html = await app.optimizedRender(template)
   res.send(html)
 
-  console.log("Opt string request time = " + (Date.now() - time) + "ms")
+  console.log("Optimized request time = " + (Date.now() - time) + "ms")
 })
 
 server.get("/stream", async (req, res) => {
