@@ -25,12 +25,14 @@ function renderToString(vnode) {
   var attrs = ""
   for (var i = 0; i < attrNames.length; i++) {
     var currentAttrName = attrNames[i]
-    var content =
-      currentAttrName == "style"
-        ? stringifyStyle(vnode.data[currentAttrName])
-        : vnode.data[currentAttrName]
+    if (typeof vnode.data[currentAttrName] !== "function") {
+      var content =
+        currentAttrName == "style"
+          ? stringifyStyle(vnode.data[currentAttrName])
+          : vnode.data[currentAttrName]
 
-    attrs += " " + currentAttrName + '="' + content + '"'
+      attrs += " " + currentAttrName + '="' + content + '"'
+    }
   }
 
   // Void tags cannot have children, so return early
