@@ -3,17 +3,31 @@ function appConfig(h) {
   var mixin = function(emit) {
     return {
       state: {
-        mix: 100
+        mix: 100,
+        mixRemote: []
       },
       actions: {
         mix: {
           add: state => ({ mix: state.mix + 1 }),
-          sub: state => ({ mix: state.mix - 1 })
+          sub: state => ({ mix: state.mix - 1 }),
+          setRemote: (state, actions, data) => {
+            return { mixRemote: data }
+          },
+          getData: (state, actions) => {
+            return new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve(["five", "six", "seven", "eight"])
+              }, 50)
+            }).then(data => actions.mix.setRemote(data))
+          }
         }
       },
       events: {
         init: (state, actions) => actions.mix.add(),
-        loaded: (state, actions) => actions.mix.sub(),
+        loaded: (state, actions) => {
+          actions.mix.sub()
+          return actions.mix.getData()
+        },
         action: (state, actions, data) => data,
         update: (state, actions, data) => data,
         render: (state, actions, view) => (state, actions) =>
