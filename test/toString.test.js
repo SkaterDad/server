@@ -35,6 +35,21 @@ test("attributes", () => {
   ])
 })
 
+test("handler functions", () => {
+  function handler() { return "y" }
+
+  RenderTest([
+    {
+      vnode: createVNode({ data: { id: "a", oncreate: () => "x" } }),
+      html: `<div id="a"></div>`
+    },
+    {
+      vnode: createVNode({ data: { id: "a", onclick: handler } }),
+      html: `<div id="a"></div>`
+    }
+  ])
+})
+
 test("style", () => {
   RenderTest([
     {
