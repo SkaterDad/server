@@ -88,3 +88,30 @@ test("vnode children", () => {
     }
   ])
 })
+
+test("void tags", () => {
+  RenderTest([
+    {
+      vnode: createVNode({
+        tag: "input",
+        data: { type: "text" }
+      }),
+      html: `<input type="text">`
+    },
+    {
+      vnode: createVNode({
+        tag: "img",
+        data: { src: "http://example.com/img.jpg" }
+      }),
+      html: `<img src="http://example.com/img.jpg">`
+    },
+    {
+      vnode: createVNode({
+        tag: "input",
+        data: { type: "text" },
+        children: [createVNode()]
+      }),
+      html: `<input type="text">`
+    },
+  ])
+})
